@@ -1,0 +1,108 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+flash            0x0000000000000000 0x0000000000080000
+ram_isp_low      0x0000000040000120 0x00000000000000df a
+ram              0x0000000040000200 0x0000000000007de0
+ram_isp_high     0x0000000040007fe0 0x0000000000000020 a
+ram_usb_dma      0x000000007fd00000 0x0000000000002000
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x0000000040007edc                _stack_end = 0x40007edc
+                0x0000000000000000                . = 0x0
+
+startup
+ *(.startup)
+
+.text           0x0000000000000000      0x378
+ *(.text)
+ .text          0x0000000000000000       0xd8 startup.o
+                0x0000000000000000                _startup
+                0x0000000000000040                Reset_Handler
+ .text          0x00000000000000d8      0x280 LED.o
+                0x00000000000000d8                delay
+                0x0000000000000138                main
+                0x0000000000000168                initLCD
+                0x00000000000001f0                enable
+                0x000000000000023c                LCD_WriteChar
+                0x0000000000000288                LCD_WriteString
+                0x00000000000002ec                LCD_Cmd
+                0x000000000000032c                IRQ_Routine
+                0x0000000000000338                FIQ_Routine
+                0x0000000000000340                SWI_Routine
+                0x000000000000034c                UNDEF_Routine
+ *(.rodata)
+ .rodata        0x0000000000000358       0x20 LED.o
+ *(.rodata*)
+ *(.glue_7)
+ .glue_7        0x0000000000000000        0x0 linker stubs
+ *(.glue_7t)
+ .glue_7t       0x0000000000000000        0x0 linker stubs
+                0x0000000000000378                _etext = .
+
+.vfp11_veneer   0x0000000000000378        0x0
+ .vfp11_veneer  0x0000000000000000        0x0 linker stubs
+
+.v4_bx          0x0000000000000378        0x0
+ .v4_bx         0x0000000000000000        0x0 linker stubs
+
+.iplt           0x0000000000000378        0x0
+ .iplt          0x0000000000000000        0x0 startup.o
+
+.rel.dyn        0x0000000000000378        0x0
+ .rel.iplt      0x0000000000000000        0x0 startup.o
+
+.data           0x0000000040000200        0x0 load address 0x0000000000000378
+                0x0000000040000200                _data = .
+ *(.data)
+ .data          0x0000000040000200        0x0 startup.o
+ .data          0x0000000040000200        0x0 LED.o
+                0x0000000040000200                _edata = .
+
+.igot.plt       0x0000000040000200        0x0 load address 0x0000000000000378
+ .igot.plt      0x0000000000000000        0x0 startup.o
+
+.bss            0x0000000040000200        0x0 load address 0x0000000000000378
+                0x0000000040000200                _bss_start = .
+ *(.bss)
+ .bss           0x0000000040000200        0x0 startup.o
+ .bss           0x0000000040000200        0x0 LED.o
+                0x0000000040000200                . = ALIGN (0x4)
+                0x0000000040000200                _bss_end = .
+                0x0000000040000200                _end = .
+LOAD startup.o
+LOAD LED.o
+OUTPUT(LED.out elf32-littlearm)
+
+.ARM.attributes
+                0x0000000000000000       0x2e
+ .ARM.attributes
+                0x0000000000000000       0x14 startup.o
+ .ARM.attributes
+                0x0000000000000014       0x32 LED.o
+
+.comment        0x0000000000000000       0x1f
+ .comment       0x0000000000000000       0x1f LED.o
+                                         0x20 (size before relaxing)
+
+.debug_info     0x0000000000000000      0x160
+ .debug_info    0x0000000000000000      0x160 LED.o
+
+.debug_abbrev   0x0000000000000000       0xde
+ .debug_abbrev  0x0000000000000000       0xde LED.o
+
+.debug_aranges  0x0000000000000000       0x20
+ .debug_aranges
+                0x0000000000000000       0x20 LED.o
+
+.debug_line     0x0000000000000000       0x8e
+ .debug_line    0x0000000000000000       0x8e LED.o
+
+.debug_str      0x0000000000000000       0xe3
+ .debug_str     0x0000000000000000       0xe3 LED.o
+
+.debug_frame    0x0000000000000000      0x12c
+ .debug_frame   0x0000000000000000      0x12c LED.o
